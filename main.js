@@ -90,8 +90,8 @@ client.on('interactionCreate', async interaction => {
 		})
 		const res = response.data;
 		
-		// Generate a random number from 1 to 1000
-		let random = Math.floor(Math.random() * 100) + 1;
+		// Generate a random number from 1 to 500
+		let random = Math.floor(Math.random() * 500) + 1;
 
 		// Defining some variables
 		let img = res.photos[random].img_src;
