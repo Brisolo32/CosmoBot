@@ -1,14 +1,19 @@
+// Getting the required packages
+
+// FS, Discord.js, Axios and Node-fetch
 const fs = require('node:fs')
 const { Client, MessageEmbed, Intents } = require('discord.js');
 const { token, napikey } = require('./config.json')
 const axios = require('axios')
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
+// Creating a new Client
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS]
 });
 
 // When the client is ready, Send a message to console
+// And define the status to 'WATCHING'
 client.on('ready', () => {
   client.user.setActivity('The Cosmos', { type: 'WATCHING' });
   console.log('Ready!')
@@ -17,10 +22,14 @@ client.on('ready', () => {
 // Does the actual command handling
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
-
+	
+	// APOD Command
+	// Sends a astronomy-related picture
+	// Different every day
 	if (interaction.commandName === 'apod') {
-		let uri = ''
-		const result = await axios.get(`https://api.nasa.gov/planetary/apod?api_key=${napikey}`).catch(error => {
+		// Defines the URI and fetches the JSON
+		let uri = `https://api.nasa.gov/planetary/apod?api_key=${napikey}`
+		const result = await axios.get(uri).catch(error => {
 		  console.log(error)
 		})
 		const res = result.data
@@ -42,10 +51,15 @@ client.on('interactionCreate', async interaction => {
 		  .setFooter({ text: `Powered by NASA | Copyright ${cp}©`})
 	
 		await interaction.reply({ embeds: [apodembed] })
-
+	
+		// IssData command
+		// Sends RealTime data of the Iss
+		// Has a 1 second ratelimit
 	} else if (interaction.commandName === 'issdata') {
+		
+		// Defines the URI and fetches its data
 		let uri = `https://api.wheretheiss.at/v1/satellites/25544`
-		interaction.reply('Fetching data...')
+		interaction.reply('Fetching data...') // Fix because discord is dumb and can only reply to interactions within a 3 second timeframe
 		let response = await axios.get(uri).catch(err => {
 		  console.log(err)
 		})
@@ -79,19 +93,26 @@ client.on('interactionCreate', async interaction => {
 		  )
 		  .setFooter({ text: 'Powered by WhereIsTheISS'})
 		await interaction.editReply({ content: '_ _', embeds: [issembed] })
-
+	
+		// Roverimg command
+		// Gets a random image from NASA's Curiosity Rover
 	} else if (interaction.commandName === 'roverimg') {
-		interaction.reply('Fetching data...')
+		
+		// Defines the URI and Fetches Data
+		interaction.reply('Fetching data...') // Same fix from earlier
 		let uri = `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=${napikey}`
 		let response = await axios.get(uri).catch(err => {
 		  console.log(err)
 		})
 		const res = response.data;
 		
-		// Generate a random number from 1 to 500
+		// Generates a random number from 1 to 500
+		// This number is the amount of images in the bot
+		// Meaning it's 500 images but it could be more
+		// On my server its running with 1000 images
 		let random = Math.floor(Math.random() * 500) + 1;
 
-		// Defining some variables
+		// Definining the photo url in a variable
 		let img = res.photos[random].img_src;
 	
 		// Creating a embed
@@ -100,7 +121,8 @@ client.on('interactionCreate', async interaction => {
 		  .setAuthor({ name: 'Curiosity'})
 		  .setImage(`${img}`)
 		  .setFooter({ text: 'Powered by NASA'})
-	
+		
+		// Editing the message sent earlier
 		await interaction.editReply({ content:"_ _", embeds: [curiosityembed] })
 	}
 
