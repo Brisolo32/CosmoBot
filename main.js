@@ -1,10 +1,8 @@
-const dotenv = require('dotenv')
 const fs = require('node:fs')
 const { Client, MessageEmbed, Intents } = require('discord.js');
 const { token, napikey } = require('./config.json')
 const axios = require('axios')
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-dotenv.config();
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS]
