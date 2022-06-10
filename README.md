@@ -1,5 +1,4 @@
-
-<h1 align='center'>CosmoBot</h1>
+<h1 align='center'>CosmoBot (ARCHIVED)</h1>
 <p align='center'>A Interstellar Bot (Made for PolyJam)</p>
 
 <div align="center">
